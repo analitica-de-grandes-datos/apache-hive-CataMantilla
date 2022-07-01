@@ -29,4 +29,24 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 /*
     >>> Escriba su respuesta a partir de este punto <<<
 */
-
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1
+AS
+SELECT
+ c1,
+ key
+FROM
+  t0
+LATERAL VIEW
+  explode(map_keys(c3)) t0 AS key;
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT 
+ key,
+ COUNT(*) AS count
+FROM
+ t1
+GROUP BY
+        key
+ORDER BY
+        key;

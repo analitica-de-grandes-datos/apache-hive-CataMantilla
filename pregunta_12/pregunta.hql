@@ -4,7 +4,7 @@ Pregunta
 ===========================================================================
 
 Escriba una consulta que compute la cantidad de registros por letra de la 
-columna 2 y clave de la columna 3; esto es, por ejemplo, la cantidad de 
+columna 2 y clave de la columna 3 esto es, por ejemplo, la cantidad de 
 registros en tienen la letra `a` en la columna 2 y la clave `aaa` en la 
 columna 3 es:
 
@@ -32,4 +32,20 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 /*
     >>> Escriba su respuesta a partir de este punto <<<
 */
-
+DROP TABLE IF EXISTS t1;
+CREATE TABLE t1
+AS
+SELECT
+    letter,
+    key
+FROM
+    t0
+LATERAL VIEW
+    explode(c2) t0 AS letter
+LATERAL VIEW
+    explode(map_keys(c3)) t0 AS key;
+INSERT OVERWRITE LOCAL DIRECTORY './output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT letter, key, COUNT(*)
+FROM t1
+GROUP BY letter, key;

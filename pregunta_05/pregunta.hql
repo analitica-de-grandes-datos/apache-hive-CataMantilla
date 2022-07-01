@@ -44,4 +44,18 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
 /*
     >>> Escriba su respuesta a partir de este punto <<<
 */
-
+DROP TABLE IF EXISTS tbl2;
+CREATE TABLE tbl2
+AS
+    SELECT 
+    YEAR(c4) AS anho,
+    letter
+FROM
+    tbl0
+LATERAL VIEW 
+    explode(c5) tbl0 AS letter;
+INSERT OVERWRITE LOCAL DIRECTORY './output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT anho, letter, COUNT(*)
+FROM tbl2
+GROUP BY letter, anho;
