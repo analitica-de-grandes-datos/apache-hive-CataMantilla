@@ -12,23 +12,21 @@ Escriba el resultado a la carpeta `output` de directorio de trabajo.
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-DROP TABLE IF EXISTS table_2;
-DROP TABLE IF EXISTS order_table;
+DROP TABLE IF EXISTS tbl;
+DROP TABLE IF EXISTS tbl;
 
-CREATE TABLE table_2(
+CREATE TABLE tbl(
         letra STRING,
         fecha STRING,
         valor INT
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
-LOAD DATA LOCAL INPATH "data.tsv" OVERWRITE INTO TABLE table_2;
+LOAD DATA LOCAL INPATH "data.tsv" OVERWRITE INTO TABLE tbl;
 
-CREATE TABLE order_table
+CREATE TABLE tbl1
 AS
-        SELECT *
-        FROM table_2
+        SELECT * FROM tbl
 ORDER BY letra, valor;
 INSERT OVERWRITE LOCAL DIRECTORY './output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-SELECT * FROM order_table;
-
+SELECT * FROM tbl1;
